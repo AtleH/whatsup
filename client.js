@@ -1,46 +1,47 @@
 var express = require('express');
 var http = require('http');
+var moment = require('moment');
 var app = express();
 
-app.get('/events', function (req, res) {
-    // var url =  'http://event.polarismedia.no/adressa/search/?dateFrom=2016-02-20&dateTo=2016-03-05&categories=8&page=1';
-    var eventHost = 'event.polarismedia.no';
-    //var eventPath = '/adressa/events/11948';
-    var listEventsPath = '/adressa/search/?dateFrom=2016-03-13&dateTo=2016-03-17&categories=8&page=1';
-    var optionsWithProxy = {
-        host: "www-proxy.statoil.no",
-        port: 80,
-        path: listEventsPath,
-        headers: {
-            Host: eventHost
-        }
-    };
-    var optionsWithoutProxy = {
-        host: eventHost,
-        port: 80,
-        path: listEventsPath
-    };
+var runsBehindProxy = true;
 
-    // Callback function is used to deal with response
-    var callback = function (response) {
+function getRequestOptionsForPath(path) {
+    var eventHost = 'event.polarismedia.no';
+    var proxyHost = "www-proxy.statoil.no";
+    return {
+        host: runsBehindProxy ? proxyHost : eventHost,
+        port: 80,
+        path: path,
+        headers: runsBehindProxy ? {Host: eventHost} : {}
+    };
+}
+
+function getListEventsPath() {
+    // http://event.polarismedia.no/adressa/search/?dateFrom=2016-02-20&dateTo=2016-03-05&categories=8&page=1
+    //var eventPath = '/adressa/events/11948';
+    var dateFormat = 'YYYY-MM-DD';
+    var today = new Date();
+    var fiveDaysAhead = new Date(today);
+    fiveDaysAhead.setDate(fiveDaysAhead.getDate() + 5);
+    var path = '/adressa/search/?dateFrom=' + moment(today).format(dateFormat) +
+        '&dateTo=' + moment(fiveDaysAhead).format(dateFormat) + '&categories=8&page=1';
+    return getRequestOptionsForPath(path);
+}
+
+app.get('/events', function (requestFromClient, responseToClient) {
+    requestFromClient = http.request(getListEventsPath(), function (responseFromEventServer) {
         // Continuously update stream with data
         var body = '';
-        response.on('data', function (data) {
+        responseFromEventServer.on('data', function (data) {
             body += data;
         });
 
-        response.on('end', function () {
-            // Data received completely.
-            console.log(body);
-            var parsedJson = JSON.parse(body);
-            console.log(parsedJson);
-            res.send(parsedJson);
-            //res.send(body);
+        responseFromEventServer.on('end', function () {
+            var events = JSON.parse(body);
+            responseToClient.send(events);
         });
-    };
-// Make a request to the server
-    req = http.request(optionsWithProxy, callback);
-    req.end();
+    });
+    requestFromClient.end();
 });
 
 app.listen(3000, function () {
