@@ -37,7 +37,14 @@ app.get('/events', function (requestFromClient, responseToClient) {
         });
 
         responseFromEventServer.on('end', function () {
-            var events = JSON.parse(body);
+            var eventListing = JSON.parse(body);
+            var events = eventListing.events.map(function(event){
+                return {
+                    name: event.name,
+                    startsAt: event.occurrence.dateFrom,
+                    venue: event.venue.name
+                };
+            });
             responseToClient.send(events);
         });
     });
