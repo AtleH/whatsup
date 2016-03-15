@@ -25,10 +25,13 @@ function getListEventsPath() {
     fiveDaysAhead.setDate(fiveDaysAhead.getDate() + 5);
     var path = '/adressa/search/?dateFrom=' + moment(today).format(dateFormat) +
         '&dateTo=' + moment(fiveDaysAhead).format(dateFormat) + '&categories=8&page=1';
+    console.log(path);
     return getRequestOptionsForPath(path);
 }
 
-app.get('/events', function (requestFromClient, responseToClient) {
+app.use(express.static('client'));
+
+app.get('/api/events', function (requestFromClient, responseToClient) {
     requestFromClient = http.request(getListEventsPath(), function (responseFromEventServer) {
         // Continuously update stream with data
         var body = '';

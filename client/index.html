@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Whatsup?</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="http://www.w3schools.com/appml/2.0.3/appml.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <script src="app.js"></script>
+</head>
+<body>
+    <div ng-app="myApp" ng-controller="myCtrl" class="container-fluid">
+        <div class="jumbotron">
+            <h1>Whatsup?</h1>
+        </div>
+        <div class="row" ng-repeat="e in serverEvents">
+            <div class="col-*-*">
+                <h3>{{e.name}}</h3>
+                <p>{{e.venue}}, {{e.startsAt | date:'EEEE, dd MMMM HH:mm'}}</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
