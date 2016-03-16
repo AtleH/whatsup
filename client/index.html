@@ -17,10 +17,10 @@
         <div class="jumbotron">
             <h1>Whatsup?</h1>
         </div>
-        <div class="row" ng-repeat="e in serverEvents">
+        <div class="row" ng-repeat="e in events">
             <div class="col-*-*">
                 <h3>{{e.name}}</h3>
-                <p>{{e.venue}}, {{e.startsAt | date:'EEEE, dd MMMM HH:mm'}}</p>
+                <p>{{e.venue.name}}, {{e.occurrence.dateFrom | date:'EEEE, dd MMMM HH:mm'}}</p>
             </div>
         </div>
     </div>

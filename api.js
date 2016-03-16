@@ -40,15 +40,7 @@ app.get('/api/events', function (requestFromClient, responseToClient) {
         });
 
         responseFromEventServer.on('end', function () {
-            var eventListing = JSON.parse(body);
-            var events = eventListing.events.map(function(event){
-                return {
-                    name: event.name,
-                    startsAt: event.occurrence.dateFrom,
-                    venue: event.venue.name
-                };
-            });
-            responseToClient.send(events);
+            responseToClient.send(JSON.parse(body));
         });
     });
     requestFromClient.end();
