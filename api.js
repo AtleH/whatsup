@@ -3,7 +3,7 @@ var http = require('http');
 var moment = require('moment');
 var app = express();
 
-var runsBehindProxy = true;
+var runsBehindProxy = false;
 
 function getRequestOptionsForPath(path) {
     var eventHost = 'event.polarismedia.no';
